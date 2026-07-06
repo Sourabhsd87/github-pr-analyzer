@@ -28,18 +28,27 @@
 # AI service implementation to utilize GEMINI API
 #---------------------------------------------------------------------------------------
 
+import logging
+
 from google import genai
 
 from app.config import GEMINI_API_KEY
 
+logger = logging.getLogger(__name__)
+
 client = genai.Client(api_key=GEMINI_API_KEY)
+
+MODEL_NAME = "gemini-2.5-flash"
 
 
 def generate_summary(prompt: str):
+    logger.info("Generating summary with model %s", MODEL_NAME)
+    logger.debug("Prompt length: %d characters", len(prompt))
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model=MODEL_NAME,
         contents=prompt,
     )
 
+    logger.info("Summary generated (%d characters)", len(response.text))
     return response.text

@@ -1,12 +1,18 @@
+import logging
+
 from github import Github
+
 from app.config import GITHUB_TOKEN
+
+logger = logging.getLogger(__name__)
 
 github_client = Github(GITHUB_TOKEN)
 
 
 def fetch_pr_data(repo_name: str, pr_number: int):
-    repo = github_client.get_repo(repo_name)
+    logger.info("Fetching PR data for %s#%s", repo_name, pr_number)
 
+    repo = github_client.get_repo(repo_name)
     pr = repo.get_pull(pr_number)
 
     files = []
@@ -24,6 +30,14 @@ def fetch_pr_data(repo_name: str, pr_number: int):
 
     for commit in pr.get_commits():
         commits.append({"message": commit.commit.message})
+
+    logger.info(
+        "Fetched PR %s#%s: %d files, %d commits",
+        repo_name,
+        pr_number,
+        len(files),
+        len(commits),
+    )
 
     return {
         "title": pr.title,

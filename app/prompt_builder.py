@@ -1,4 +1,20 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def build_pr_summary_prompt(pr_data: dict):
+    file_count = len(pr_data["files"])
+    commit_count = len(pr_data["commits"])
+    patch_count = min(file_count, 10)
+
+    logger.info(
+        "Building prompt for PR %r (%d files, %d commits, %d patches included)",
+        pr_data.get("title"),
+        file_count,
+        commit_count,
+        patch_count,
+    )
 
     changed_files = "\n".join([f"- {f['filename']}" for f in pr_data["files"]])
 
@@ -14,7 +30,7 @@ def build_pr_summary_prompt(pr_data: dict):
             """
             for f in pr_data["files"][:10]
         ]
-    )       
+    )
 
     prompt = f"""
 You are a senior software engineer.
@@ -53,6 +69,8 @@ Expected JSON format:
         }}
     ],
 
+    "text to be added in CHANGELOG.md": "string",
+    
     "risks": [
         "string"
     ],
@@ -75,4 +93,5 @@ Rules:
 - Explain file-level key changes clearly
 - Ensure valid parsable JSON
 """
+    logger.debug("Prompt built (%d characters)", len(prompt))
     return prompt
