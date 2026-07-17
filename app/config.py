@@ -1,14 +1,15 @@
 import logging
+import os
+from dotenv import load_dotenv
 
 import app.logging_config  # noqa: F401
 
-from app.vault_service import get_github_token
-from app.vault_service import get_gemini_key
-
 logger = logging.getLogger(__name__)
 
-GITHUB_TOKEN = get_github_token()
-GEMINI_API_KEY = get_gemini_key()
+load_dotenv()
+
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 missing_secrets = []
 
@@ -27,4 +28,4 @@ if missing_secrets:
         f"Failed to load required secrets from Vault: {', '.join(missing_secrets)}"
     )
 
-logger.info("All secrets loaded successfully from Vault")
+logger.info("All secrets loaded successfully")
