@@ -21,11 +21,11 @@ if not GEMINI_API_KEY:
 
 if missing_secrets:
     logger.critical(
-        "Failed to load required secrets from Vault: %s",
+        "Failed to load required secrets from environment: %s",
         ", ".join(missing_secrets),
     )
     raise RuntimeError(
-        f"Failed to load required secrets from Vault: {', '.join(missing_secrets)}"
+        f"Failed to load required secrets from environment: {', '.join(missing_secrets)}"
     )
 
 logger.info("All secrets loaded successfully")
