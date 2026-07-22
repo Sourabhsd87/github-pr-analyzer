@@ -4,6 +4,7 @@ import logging
 import app.logging_config  # noqa: F401 — configure logging before other app imports
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 
 from app.github_service import fetch_pr_data
 from app.prompt_builder import build_pr_summary_prompt
@@ -21,6 +22,11 @@ app = FastAPI(
 @app.on_event("startup")
 def on_startup():
     logger.info("PR Summary Agent started")
+
+
+@app.get("/")
+def root():
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/summarize-pr")
